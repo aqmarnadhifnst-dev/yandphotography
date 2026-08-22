@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yand | Wedding Photography</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome untuk Social Media Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'serif': ['Playfair Display', 'serif'],
+                        'sans': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'warm-white': '#FDFBF7',
+                        'beige': '#F4F1EA',
+                        'charcoal': '#2D2D2D',
+                        'soft-charcoal': '#4A4A4A',
+                        'whatsapp': '#25D366',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #FDFBF7; }
+        ::-webkit-scrollbar-thumb { background: #D6D3D1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #A8A29E; }
+        html { scroll-behavior: smooth; }
+
+        /* Lightbox Styles */
+        .lightbox {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .lightbox.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .lightbox-img {
+            max-height: 90vh;
+            max-width: 90vw;
+            object-fit: contain;
+        }
+
+        /* Floating WhatsApp Button Animation */
+        .whatsapp-float {
+            animation: pulse-whatsapp 2s infinite;
+        }
+        @keyframes pulse-whatsapp {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Social Media Hover Effects */
+        .social-icon {
+            transition: all 0.3s ease;
+        }
+        .social-icon:hover {
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+
+<body class="bg-warm-white text-charcoal font-sans antialiased">
+
+    <!-- ========================================== -->
+    <!-- FLOATING WHATSAPP BUTTON (NEW!)            -->
+    <!-- ========================================== -->
+    <a href="https://wa.me/6281234567890?text=Halo%20Eternal%20Moments,%20saya%20tertarik%20dengan%20jasa%20wedding%20photography%20Anda.%20Boleh%20mohon%20informasi%20lebih%20lanjut?" 
+       target="_blank"
+       class="fixed bottom-6 right-6 z-50 bg-whatsapp text-white p-4 rounded-full shadow-2xl whatsapp-float hover:bg-green-600 transition-colors duration-300 flex items-center justify-center">
+        <i class="fab fa-whatsapp text-3xl"></i>
+    </a>
+
+    <!-- ========================================== -->
+    <!-- 1. NAVBAR                                   -->
+    <!-- ========================================== -->
+    <nav id="navbar" class="fixed w-full z-40 transition-all duration-500 ease-in-out bg-transparent">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <a href="#" class="text-2xl font-serif text-white transition-colors duration-500" id="logo">
+                    Yand <span class="italic font-light">Photography</span>
+                </a>
+
+                <div class="hidden md:flex space-x-10 items-center">
+                    <a href="#beranda" class="text-white/90 hover:text-white transition-colors duration-300 text-sm tracking-widest uppercase nav-link">Beranda</a>
+                    <a href="#terbaru" class="text-white/90 hover:text-white transition-colors duration-300 text-sm tracking-widest uppercase nav-link">Terbaru</a>
+                    <a href="#portofolio" class="text-white/90 hover:text-white transition-colors duration-300 text-sm tracking-widest uppercase nav-link">Portofolio</a>
+                    <a href="#tentang" class="text-white/90 hover:text-white transition-colors duration-300 text-sm tracking-widest uppercase nav-link">Tentang</a>
+                    <a href="#paket" class="text-white/90 hover:text-white transition-colors duration-300 text-sm tracking-widest uppercase nav-link">Paket</a>
+                    <a href="#kontak" class="text-white/90 hover:text-white transition-colors duration-300 text-sm tracking-widest uppercase nav-link">Kontak</a>
+                    
+                    <!-- Social Media Icons di Navbar -->
+                    <div class="flex space-x-4 ml-6 pl-6 border-l border-white/30">
+                        <a href="https://instagram.com/eternalmoments" target="_blank" class="text-white/70 hover:text-white transition-colors">
+                            <i class="fab fa-instagram text-lg"></i>
+                        </a>
+                        <a href="https://facebook.com/eternalmoments" target="_blank" class="text-white/70 hover:text-white transition-colors">
+                            <i class="fab fa-facebook-f text-lg"></i>
+                        </a>
+                        <a href="https://tiktok.com/@eternalmoments" target="_blank" class="text-white/70 hover:text-white transition-colors">
+                            <i class="fab fa-tiktok text-lg"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <button id="mobile-menu-btn" class="md:hidden text-white focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <div id="mobile-menu" class="hidden md:hidden bg-warm-white shadow-lg">
+            <div class="px-6 py-4 space-y-4">
+                <a href="#beranda" class="block text-charcoal hover:text-soft-charcoal text-sm tracking-widest uppercase">Beranda</a>
+                <a href="#terbaru" class="block text-charcoal hover:text-soft-charcoal text-sm tracking-widest uppercase">Terbaru</a>
+                <a href="#portofolio" class="block text-charcoal hover:text-soft-charcoal text-sm tracking-widest uppercase">Portofolio</a>
+                <a href="#tentang" class="block text-charcoal hover:text-soft-charcoal text-sm tracking-widest uppercase">Tentang</a>
+                <a href="#paket" class="block text-charcoal hover:text-soft-charcoal text-sm tracking-widest uppercase">Paket</a>
+                <a href="#kontak" class="block text-charcoal hover:text-soft-charcoal text-sm tracking-widest uppercase">Kontak</a>
+                
+                <!-- Social Media di Mobile Menu -->
+                <div class="flex space-x-4 pt-4 border-t border-stone-200">
+                    <a href="https://instagram.com/eternalmoments" target="_blank" class="text-charcoal hover:text-soft-charcoal">
+                        <i class="fab fa-instagram text-xl"></i>
+                    </a>
+                    <a href="https://facebook.com/eternalmoments" target="_blank" class="text-charcoal hover:text-soft-charcoal">
+                        <i class="fab fa-facebook-f text-xl"></i>
+                    </a>
+                    <a href="https://tiktok.com/@eternalmoments" target="_blank" class="text-charcoal hover:text-soft-charcoal">
+                        <i class="fab fa-tiktok text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ========================================== -->
+    <!-- 2. HERO IMAGE SECTION                       -->
+    <!-- ========================================== -->
+    <section id="beranda" class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" 
+             style="background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
+        </div>
+        <div class="absolute inset-0 bg-charcoal/40"></div>
+
+        <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
+            <p class="text-white/80 text-sm md:text-base tracking-[0.3em] uppercase mb-4 font-light">Wedding Photography</p>
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-serif text-white leading-tight mb-6">
+                Mengabadikan <span class="italic">Kisah Cinta</span> Anda
+            </h1>
+            <p class="text-white/90 text-base md:text-lg font-light max-w-2xl mx-auto mb-10 leading-relaxed">
+                Setiap senyum, setiap tatapan, dan setiap air mata kebahagiaan akan kami abadikan dalam bingkai kenangan yang tak lekang oleh waktu.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#terbaru" class="inline-block px-8 py-3 bg-white text-charcoal text-sm tracking-widest uppercase hover:bg-beige transition-all duration-300">
+                    Lihat Terbaru
+                </a>
+                <a href="https://wa.me/6281234567890" target="_blank" class="inline-block px-8 py-3 border border-white/80 text-white text-sm tracking-widest uppercase hover:bg-white hover:text-charcoal transition-all duration-300">
+                    <i class="fab fa-whatsapp mr-2"></i>Chat WhatsApp
+                </a>
+            </div>
+        </div>
+
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <svg class="w-6 h-6 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 3. LATEST PHOTOS SECTION (NEW!)             -->
+    <!-- ========================================== -->
+    <section id="terbaru" class="py-20 md:py-28 bg-warm-white">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <p class="text-soft-charcoal text-sm tracking-[0.3em] uppercase mb-3">Fresh from the Camera</p>
+                <h2 class="text-3xl md:text-5xl font-serif text-charcoal">Foto Terbaru</h2>
+                <div class="w-16 h-px bg-charcoal/30 mx-auto mt-6"></div>
+                <p class="text-soft-charcoal mt-6 max-w-2xl mx-auto font-light">
+                    Update terbaru dari pernikahan-pernikahan yang telah kami dokumentasikan
+                </p>
+            </div>
+
+            <!-- 
+                CARA TAMBAH FOTO TERBARU:
+                Copy salah satu div dengan class "break-inside-avoid" di bawah ini
+                Ganti URL gambar di src="" dengan URL foto baru Anda
+                Ganti alt="Wedding X" dengan deskripsi foto
+            -->
+            <div class="columns-1 sm:columns-2 lg:columns-4 gap-4 space-y-4">
+                
+                <!-- Foto Terbaru 1 -->
+                <div class="break-inside-avoid group relative overflow-hidden rounded-sm cursor-pointer" onclick="openLightbox(0)">
+                    <img src="https://images.unsplash.com/photo-1591604466107-ec97de577aff?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                         alt="Wedding Terbaru 1" 
+                         class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/20 transition-all duration-500"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-charcoal/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <p class="text-white text-sm font-serif italic">Sarah & Dimas</p>
+                        <p class="text-white/80 text-xs">Bali, Agustus 2024</p>
+                    </div>
+                </div>
+
+                <!-- Foto Terbaru 2 -->
+                <div class="break-inside-avoid group relative overflow-hidden rounded-sm cursor-pointer" onclick="openLightbox(1)">
+                    <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                         alt="Wedding Terbaru 2" 
+                         class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/20 transition-all duration-500"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-charcoal/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <p class="text-white text-sm font-serif italic">Maya & Rendi</p>
+                        <p class="text-white/80 text-xs">Yogyakarta, Juli 2024</p>
+                    </div>
+                </div>
+
+                <!-- Foto Terbaru 3 -->
+                <div class="break-inside-avoid group relative overflow-hidden rounded-sm cursor-pointer" onclick="openLightbox(2)">
+                    <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                         alt="Wedding Terbaru 3" 
+                         class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/20 transition-all duration-500"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-charcoal/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <p class="text-white text-sm font-serif italic">Lisa & Bryan</p>
+                        <p class="text-white/80 text-xs">Lombok, Juni 2024</p>
+                    </div>
+                </div>
+
+                <!-- Foto Terbaru 4 -->
+                <div class="break-inside-avoid group relative overflow-hidden rounded-sm cursor-pointer" onclick="openLightbox(3)">
+                    <img src="https://images.unsplash.com/photo-1606216794074-735e91aa2c92?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                         alt="Wedding Terbaru 4" 
+                         class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/20 transition-all duration-500"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-charcoal/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <p class="text-white text-sm font-serif italic">Dewi & Andi</p>
+                        <p class="text-white/80 text-xs">Jakarta, Mei 2024</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="text-center mt-12">
+                <a href="#portofolio" class="inline-block px-8 py-3 bg-charcoal text-warm-white text-sm tracking-widest uppercase hover:bg-soft-charcoal transition-colors duration-300">
+                    Lihat Semua Portofolio
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 4. MASONRY GALLERY SECTION                  -->
+    <!-- ========================================== -->
+    <section id="portofolio" class="py-20 md:py-28 bg-beige">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <p class="text-soft-charcoal text-sm tracking-[0.3em] uppercase mb-3">Our Work</p>
+                <h2 class="text-3xl md:text-5xl font-serif text-charcoal">Momen yang Abadi</h2>
+                <div class="w-16 h-px bg-charcoal/30 mx-auto mt-6"></div>
+            </div>
+
+            <div class="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
+                
+                <div class="break-inside-avoid group relative overflow-hidden rounded-sm cursor-pointer" onclick="openLightbox(0)">
+                    <img src="https://images.unsplash.com/photo-1591604466107-ec97de577aff?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Wedding 1" class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/20 transition-all duration-500"></div>
+                </div>
+
+                <div class="break-inside-avoid group relative overflow-hidden rounded-sm cursor-pointer" onclick="openLightbox(1)">
+                    <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Wedding 2" class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/20 transition-all duration-500"></div>
+                </div>
+
+                <div class="break-inside-avoid group relative overflow-hidden rounded-sm cursor-pointer" onclick="openLightbox(2)">
+                    <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Wedding 3" class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/20 transition-all duration-500"></div>
+                </div>
+
+                <div class="break-inside-avoid group relative overflow-hidden rounded-sm cursor-pointer" onclick="openLightbox(3)">
+                    <img src="https://images.unsplash.com/photo-1606216794074-735e91aa2c92?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Wedding 4" class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/20 transition-all duration-500"></div>
+                </div>
+
+                <div class="break-inside-avoid group relative overflow-hidden rounded-sm cursor-pointer" onclick="openLightbox(4)">
+                    <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Wedding 5" class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/20 transition-all duration-500"></div>
+                </div>
+
+                <div class="break-inside-avoid group relative overflow-hidden rounded-sm cursor-pointer" onclick="openLightbox(5)">
+                    <img src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Wedding 6" class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/20 transition-all duration-500"></div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 5. ABOUT SECTION                            -->
+    <!-- ========================================== -->
+    <section id="tentang" class="py-20 md:py-28 bg-warm-white">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+                
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1554048612-b6a482bc67e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Photographer" class="w-full h-[600px] object-cover rounded-sm shadow-2xl">
+                    <div class="absolute -bottom-6 -right-6 bg-beige p-6 rounded-sm shadow-lg hidden md:block">
+                        <p class="text-4xl font-serif text-charcoal">8+</p>
+                        <p class="text-sm text-soft-charcoal tracking-wider uppercase">Tahun Pengalaman</p>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-soft-charcoal text-sm tracking-[0.3em] uppercase mb-3">Tentang Saya</p>
+                    <h2 class="text-3xl md:text-5xl font-serif text-charcoal mb-6">Halo, Saya <span class="italic">Andi Pratama</span></h2>
+                    <div class="w-16 h-px bg-charcoal/30 mb-8"></div>
+                    
+                    <p class="text-soft-charcoal leading-relaxed mb-6 font-light">
+                        Saya adalah seorang wedding photographer yang berbasis di Jakarta dengan passion untuk mengabadikan momen-momen paling berharga dalam hidup Anda.
+                    </p>
+                    
+                    <p class="text-soft-charcoal leading-relaxed mb-8 font-light">
+                        Filosofi saya sederhana: <span class="italic font-serif text-charcoal">"Setiap pasangan punya cerita unik yang layak diabadikan dengan cara yang autentik dan elegan."</span>
+                    </p>
+
+                    <div class="grid grid-cols-3 gap-6 mb-8 pt-8 border-t border-stone-200">
+                        <div>
+                            <p class="text-3xl font-serif text-charcoal mb-1">200+</p>
+                            <p class="text-xs text-soft-charcoal tracking-wider uppercase">Weddings</p>
+                        </div>
+                        <div>
+                            <p class="text-3xl font-serif text-charcoal mb-1">50K+</p>
+                            <p class="text-xs text-soft-charcoal tracking-wider uppercase">Photos</p>
+                        </div>
+                        <div>
+                            <p class="text-3xl font-serif text-charcoal mb-1">100%</p>
+                            <p class="text-xs text-soft-charcoal tracking-wider uppercase">Happy Couples</p>
+                        </div>
+                    </div>
+
+                    <a href="#kontak" class="inline-block px-8 py-3 bg-charcoal text-warm-white text-sm tracking-widest uppercase hover:bg-soft-charcoal transition-colors duration-300">
+                        Mari Bekerja Sama
+                    </a>
+                </div>
+            </div>
+
+            <!-- Testimonials - Lebih Banyak! -->
+            <div class="mt-24">
+                <div class="text-center mb-12">
+                    <p class="text-soft-charcoal text-sm tracking-[0.3em] uppercase mb-3">Testimonials</p>
+                    <h3 class="text-2xl md:text-3xl font-serif text-charcoal">Kata Mereka</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Testimonial 1 -->
+                    <div class="bg-beige p-8 rounded-sm">
+                        <div class="flex mb-4">
+                            <svg class="w-5 h-5 text-charcoal" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-5 h-5 text-charcoal" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-5 h-5 text-charcoal" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-5 h-5 text-charcoal" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-5 h-5 text-charcoal" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        </div>
+                        <p class="text-soft-charcoal italic mb-6 leading-relaxed">
+                            "Andi benar-benar menangkap esensi hari pernikahan kami. Setiap foto bercerita dan membuat kami menangis bahagia saat melihatnya kembali."
+                        </p>
+                        <p class="text-charcoal font-semibold">Sarah & Dimas</p>
+                        <p class="text-xs text-soft-charcoal tracking-wider">Wedding di Bali, 2024</p>
+                    </div>
+
+                    <!-- Testimonial 2 -->
+                    <div class="bg-beige p-8 rounded-sm">
+                        <div class="flex mb-4">
+                            <svg class="w-5 h-5 text-charcoal" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-5 h-5 text-charcoal" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-5 h-5 text-charcoal" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-5 h-5 text-charcoal" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-5 h-5 text-charcoal" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        </div>
+                        <p class="text-soft-charcoal italic mb-6 leading-relaxed">
+                            "Profesional, kreatif, dan sangat mudah diajak kerja sama. Hasilnya melebihi ekspektasi kami. Highly recommended!"
+                        </p>
+                        <p class="text-charcoal font-semibold">Maya & Rendi</p>
+                        <p class="text-xs text-soft-charcoal tracking-wider">Wedding di Yogyakarta, 2024</p>
+                    </div>
+
+                    <!-- Testimonial 3 -->
+                    <div class="bg-beige p-8 rounded-sm">
+                        <div class="flex mb-4">
+                            <svg class="w-5 h-5 text-charcoal" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-5 h-5 text-charcoal" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-5 h-5 text-charcoal" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-5 h-5 text-charcoal" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-5 h-5 text-charcoal" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        </div>
+                        <p class="text-soft-charcoal italic mb-6 leading-relaxed">
+                            "Investasi terbaik untuk pernikahan kami. Foto-fotonya bukan hanya indah, tapi juga penuh emosi. Terima kasih, Andi!"
+                        </p>
+                        <p class="text-charcoal font-semibold">Lisa & Bryan</p>
+                        <p class="text-xs text-soft-charcoal tracking-wider">Wedding di Lombok, 2023</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 6. PRICING CARDS SECTION (Lebih Banyak!)    -->
+    <!-- ========================================== -->
+    <section id="paket" class="py-20 md:py-28 bg-beige">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <p class="text-soft-charcoal text-sm tracking-[0.3em] uppercase mb-3">Investment</p>
+                <h2 class="text-3xl md:text-5xl font-serif text-charcoal">Paket Pernikahan</h2>
+                <div class="w-16 h-px bg-charcoal/30 mx-auto mt-6"></div>
+                <p class="text-soft-charcoal mt-6 max-w-2xl mx-auto font-light">
+                    Pilih paket yang paling sesuai dengan kebutuhan dan visi pernikahan impian Anda. Semua paket dapat disesuaikan.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 items-stretch">
+                
+                <!-- Paket 1: Silver -->
+                <div class="bg-white p-6 md:p-8 border border-stone-200 rounded-sm hover:shadow-xl transition-shadow duration-500 flex flex-col">
+                    <h3 class="text-lg font-serif text-charcoal mb-2">Silver</h3>
+                    <p class="text-soft-charcoal text-xs mb-4 font-light">Intimate Wedding</p>
+                    <div class="mb-6">
+                        <span class="text-3xl font-serif text-charcoal">Rp 12 Jt</span>
+                    </div>
+                    <ul class="space-y-3 mb-8 flex-grow text-soft-charcoal text-xs">
+                        <li class="flex items-start">
+                            <svg class="w-4 h-4 mr-2 mt-0.5 text-charcoal flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>1 Fotografer</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-4 h-4 mr-2 mt-0.5 text-charcoal flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>8 Jam Dokumentasi</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-4 h-4 mr-2 mt-0.5 text-charcoal flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>300+ Foto Editan</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-4 h-4 mr-2 mt-0.5 text-charcoal flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>Online Gallery</span>
+                        </li>
+                    </ul>
+                    <a href="https://wa.me/6281234567890?text=Halo,%20saya%20tertarik%20dengan%20Paket%20Silver" target="_blank" class="block text-center w-full py-2 border border-charcoal text-charcoal text-xs tracking-widest uppercase hover:bg-charcoal hover:text-warm-white transition-all duration-300">
+                        Pilih Paket
+                    </a>
+                </div>
+
+                <!-- Paket 2: Gold (Featured) -->
+                <div class="bg-charcoal text-warm-white p-6 md:p-8 rounded-sm shadow-2xl transform lg:-translate-y-4 flex flex-col relative">
+                    <div class="absolute top-0 right-0 bg-warm-white text-charcoal text-xs tracking-widest uppercase px-3 py-1 rounded-bl-sm font-semibold">
+                        Populer
+                    </div>
+                    <h3 class="text-lg font-serif mb-2">Gold</h3>
+                    <p class="text-stone-300 text-xs mb-4 font-light">Standard Wedding</p>
+                    <div class="mb-6">
+                        <span class="text-3xl font-serif">Rp 22 Jt</span>
+                    </div>
+                    <ul class="space-y-3 mb-8 flex-grow text-stone-200 text-xs">
+                        <li class="flex items-start">
+                            <svg class="w-4 h-4 mr-2 mt-0.5 text-warm-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>2 Fotografer + 1 Videografer</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-4 h-4 mr-2 mt-0.5 text-warm-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>12 Jam (Full Day)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-4 h-4 mr-2 mt-0.5 text-warm-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>500+ Foto + Cinematic Video</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-4 h-4 mr-2 mt-0.5 text-warm-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>Pre-wedding (1 Lokasi)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-4 h-4 mr-2 mt-0.5 text-warm-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>Premium Leather Album</span>
+                        </li>
+                    </ul>
+                    <a href="https://wa.me/6281234567890?text=Halo,%20saya%20tertarik%20dengan%20Paket%20Gold" target="_blank" class="block text-center w-full py-2 bg-warm-white text-charcoal text-xs tracking-widest uppercase hover:bg-stone-200 transition-all duration-300 font-semibold">
+                        Pilih Paket
+                    </a>
+                </div>
+
+                <!-- Paket 3: Platinum -->
+                <div class="bg-white p-6 md:p-8 border border-stone-200 rounded-sm hover:shadow-xl transition-shadow duration-500 flex flex-col">
+                    <h3 class="text-lg font-serif text-charcoal mb-2">Platinum</h3>
+                    <p class="text-soft-charcoal text-xs mb-4 font-light">Luxury Wedding</p>
+                    <div class="mb-6">
+                        <span class="text-3xl font-serif text-charcoal">Rp 35 Jt</span>
+                    </div>
+                    <ul class="space-y-3 mb-8 flex-grow text-soft-charcoal text-xs">
+                        <li class="flex items-start">
+                            <svg class="w-4 h-4 mr-2 mt-0.5 text-charcoal flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>3 Fotografer + 2 Videografer</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-4 h-4 mr-2 mt-0.5 text-charcoal flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>Unlimited Hours</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-4 h-4 mr-2 mt-0.5 text-charcoal flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>All Photos + Same Day Edit</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-4 h-4 mr-2 mt-0.5 text-charcoal flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>Pre & Post-Wedding</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-4 h-4 mr-2 mt-0.5 text-charcoal flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>Exclusive Album & Canvas</span>
+                        </li>
+                    </ul>
+                    <a href="https://wa.me/6281234567890?text=Halo,%20saya%20tertarik%20dengan%20Paket%20Platinum" target="_blank" class="block text-center w-full py-2 border border-charcoal text-charcoal text-xs tracking-widest uppercase hover:bg-charcoal hover:text-warm-white transition-all duration-300">
+                        Pilih Paket
+                    </a>
+                </div>
+
+                <!-- Paket 4: Custom (NEW!) -->
+                <div class="bg-warm-white p-6 md:p-8 border-2 border-dashed border-charcoal/30 rounded-sm hover:border-charcoal transition-colors duration-500 flex flex-col">
+                    <h3 class="text-lg font-serif text-charcoal mb-2">Custom</h3>
+                    <p class="text-soft-charcoal text-xs mb-4 font-light">Tailored Package</p>
+                    <div class="mb-6">
+                        <span class="text-3xl font-serif text-charcoal">Custom</span>
+                    </div>
+                    <ul class="space-y-3 mb-8 flex-grow text-soft-charcoal text-xs">
+                        <li class="flex items-start">
+                            <svg class="w-4 h-4 mr-2 mt-0.5 text-charcoal flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>Paket Sesuai Kebutuhan</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-4 h-4 mr-2 mt-0.5 text-charcoal flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>Fleksibel & Personalized</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-4 h-4 mr-2 mt-0.5 text-charcoal flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>Konsultasi Gratis</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-4 h-4 mr-2 mt-0.5 text-charcoal flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>Harga Kompetitif</span>
+                        </li>
+                    </ul>
+                    <a href="https://wa.me/6281234567890?text=Halo,%20saya%20ingin%20konsultasi%20paket%20custom" target="_blank" class="block text-center w-full py-2 bg-charcoal text-warm-white text-xs tracking-widest uppercase hover:bg-soft-charcoal transition-all duration-300">
+                        Konsultasi
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 7. CONTACT FORM SECTION                     -->
+    <!-- ========================================== -->
+    <section id="kontak" class="py-20 md:py-28 bg-warm-white">
+        <div class="max-w-4xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <p class="text-soft-charcoal text-sm tracking-[0.3em] uppercase mb-3">Get In Touch</p>
+                <h2 class="text-3xl md:text-5xl font-serif text-charcoal">Mari Bercerita</h2>
+                <div class="w-16 h-px bg-charcoal/30 mx-auto mt-6"></div>
+                <p class="text-soft-charcoal mt-6 max-w-2xl mx-auto font-light">
+                    Siap mengabadikan hari istimewa Anda? Isi form di bawah dan kami akan menghubungi Anda via WhatsApp dalam 24 jam.
+                </p>
+            </div>
+
+            <form id="contactForm" class="bg-beige p-8 md:p-12 rounded-sm shadow-lg">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label class="block text-sm text-charcoal mb-2 tracking-wider uppercase">Nama Lengkap *</label>
+                        <input type="text" id="nama" required class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm focus:outline-none focus:border-charcoal transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-charcoal mb-2 tracking-wider uppercase">Email *</label>
+                        <input type="email" id="email" required class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm focus:outline-none focus:border-charcoal transition-colors">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label class="block text-sm text-charcoal mb-2 tracking-wider uppercase">No. WhatsApp *</label>
+                        <input type="tel" id="whatsapp" required placeholder="08123456789" class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm focus:outline-none focus:border-charcoal transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-charcoal mb-2 tracking-wider uppercase">Tanggal Pernikahan *</label>
+                        <input type="date" id="tanggal" required class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm focus:outline-none focus:border-charcoal transition-colors">
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm text-charcoal mb-2 tracking-wider uppercase">Paket yang Diminati</label>
+                    <select id="paket" class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm focus:outline-none focus:border-charcoal transition-colors">
+                        <option value="">Pilih Paket</option>
+                        <option value="Silver">Silver Collection - Rp 12 Jt</option>
+                        <option value="Gold">Gold Collection - Rp 22 Jt</option>
+                        <option value="Platinum">Platinum Collection - Rp 35 Jt</option>
+                        <option value="Custom">Custom Package</option>
+                    </select>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm text-charcoal mb-2 tracking-wider uppercase">Pesan Tambahan</label>
+                    <textarea id="pesan" rows="4" placeholder="Ceritakan tentang pernikahan impian Anda..." class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm focus:outline-none focus:border-charcoal transition-colors"></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-4 bg-charcoal text-warm-white text-sm tracking-widest uppercase hover:bg-soft-charcoal transition-colors duration-300 flex items-center justify-center gap-2">
+                    <i class="fab fa-whatsapp"></i>
+                    Kirim via WhatsApp
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 8. FOOTER WITH SOCIAL MEDIA (UPDATED!)      -->
+    <!-- ========================================== -->
+    <footer class="bg-charcoal text-warm-white py-16">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+                <!-- Brand -->
+                <div>
+                    <h3 class="text-2xl font-serif mb-4">Yand <span class="italic font-light">Photography</span></h3>
+                    <p class="text-stone-300 font-light text-sm leading-relaxed mb-6">
+                        Mengabadikan momen-momen berharga dalam hidup Anda dengan sentuhan seni dan profesionalisme.
+                    </p>
+                    <!-- Social Media Icons -->
+                    <div class="flex space-x-4">
+                        <a href="https://instagram.com/eternalmoments" target="_blank" class="social-icon w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-whatsapp transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://facebook.com/eternalmoments" target="_blank" class="social-icon w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-blue-600 transition-colors">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://tiktok.com/@eternalmoments" target="_blank" class="social-icon w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-black transition-colors">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                        <a href="https://youtube.com/eternalmoments" target="_blank" class="social-icon w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-red-600 transition-colors">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-sm tracking-widest uppercase mb-6">Quick Links</h4>
+                    <ul class="space-y-3 text-stone-300 text-sm">
+                        <li><a href="#beranda" class="hover:text-white transition-colors">Beranda</a></li>
+                        <li><a href="#terbaru" class="hover:text-white transition-colors">Foto Terbaru</a></li>
+                        <li><a href="#portofolio" class="hover:text-white transition-colors">Portofolio</a></li>
+                        <li><a href="#tentang" class="hover:text-white transition-colors">Tentang Kami</a></li>
+                        <li><a href="#paket" class="hover:text-white transition-colors">Paket Pernikahan</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <h4 class="text-sm tracking-widest uppercase mb-6">Kontak</h4>
+                    <ul class="space-y-3 text-stone-300 text-sm">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-3"></i>
+                            <span>Jl. Sudirman No. 123<br>Padangsidimpuan, 12190</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fab fa-whatsapp mr-3"></i>
+                            <span>+62 812-3456-7890</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-3"></i>
+                            <span>hello@gmail.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-stone-700 pt-8 flex flex-col md:flex-row justify-between items-center text-stone-400 text-xs tracking-wider">
+                <p>&copy; 2026 Yand Photography. All rights reserved.</p>
+                <p class="mt-2 md:mt-0">Crafted with <i class="fas fa-heart text-red-500"></i> for love stories</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ========================================== -->
+    <!-- LIGHTBOX MODAL                              -->
+    <!-- ========================================== -->
+    <div id="lightbox" class="lightbox fixed inset-0 z-[60] bg-charcoal/95 flex items-center justify-center p-4">
+        <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white/70 hover:text-white transition-colors">
+            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        
+        <button onclick="changeImage(-1)" class="absolute left-6 text-white/70 hover:text-white transition-colors">
+            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+        </button>
+        
+        <img id="lightbox-image" src="" alt="" class="lightbox-img">
+        
+        <button onclick="changeImage(1)" class="absolute right-6 text-white/70 hover:text-white transition-colors">
+            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- JAVASCRIPT                                  -->
+    <!-- ========================================== -->
+    <script>
+        // ==========================================
+        // KONFIGURASI - UBAH DI SINI!
+        // ==========================================
+        
+        // Nomor WhatsApp Anda (format: 628xxx)
+        const WHATSAPP_NUMBER = '6281234567890';
+        
+        // Daftar foto untuk lightbox - TAMBAH FOTO DI SINI!
+        const galleryImages = [
+            'https://images.unsplash.com/photo-1591604466107-ec97de577aff?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=90',
+            'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=90',
+            'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=90',
+            'https://images.unsplash.com/photo-1606216794074-735e91aa2c92?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=90',
+            'https://images.unsplash.com/photo-1583939003579-730e3918a45a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=90',
+            'https://images.unsplash.com/photo-1520854221256-17451cc331bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=90'
+        ];
+        
+        let currentImageIndex = 0;
+
+        // ==========================================
+        // NAVBAR SCROLL EFFECT
+        // ==========================================
+        const navbar = document.getElementById('navbar');
+        const logo = document.getElementById('logo');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.remove('bg-transparent');
+                navbar.classList.add('bg-warm-white/95', 'backdrop-blur-md', 'shadow-sm');
+                logo.classList.remove('text-white');
+                logo.classList.add('text-charcoal');
+                navLinks.forEach(link => {
+                    link.classList.remove('text-white/90', 'hover:text-white');
+                    link.classList.add('text-charcoal/80', 'hover:text-charcoal');
+                });
+                mobileMenuBtn.classList.remove('text-white');
+                mobileMenuBtn.classList.add('text-charcoal');
+            } else {
+                navbar.classList.add('bg-transparent');
+                navbar.classList.remove('bg-warm-white/95', 'backdrop-blur-md', 'shadow-sm');
+                logo.classList.add('text-white');
+                logo.classList.remove('text-charcoal');
+                navLinks.forEach(link => {
+                    link.classList.add('text-white/90', 'hover:text-white');
+                    link.classList.remove('text-charcoal/80', 'hover:text-charcoal');
+                });
+                mobileMenuBtn.classList.add('text-white');
+                mobileMenuBtn.classList.remove('text-charcoal');
+            }
+        });
+
+        // ==========================================
+        // MOBILE MENU
+        // ==========================================
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // ==========================================
+        // LIGHTBOX GALLERY
+        // ==========================================
+        function openLightbox(index) {
+            currentImageIndex = index;
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImage = document.getElementById('lightbox-image');
+            lightboxImage.src = galleryImages[index];
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function changeImage(direction) {
+            currentImageIndex += direction;
+            if (currentImageIndex < 0) currentImageIndex = galleryImages.length - 1;
+            if (currentImageIndex >= galleryImages.length) currentImageIndex = 0;
+            
+            const lightboxImage = document.getElementById('lightbox-image');
+            lightboxImage.style.opacity = '0';
+            setTimeout(() => {
+                lightboxImage.src = galleryImages[currentImageIndex];
+                lightboxImage.style.opacity = '1';
+            }, 200);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (!document.getElementById('lightbox').classList.contains('active')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowLeft') changeImage(-1);
+            if (e.key === 'ArrowRight') changeImage(1);
+        });
+
+        // ==========================================
+        // CONTACT FORM - WHATSAPP INTEGRATION
+        // ==========================================
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nama = document.getElementById('nama').value;
+            const email = document.getElementById('email').value;
+            const whatsapp = document.getElementById('whatsapp').value;
+            const tanggal = document.getElementById('tanggal').value;
+            const paket = document.getElementById('paket').value;
+            const pesan = document.getElementById('pesan').value;
+            
+            const message = `Halo Eternal Moments!%0A%0A` +
+                           `Saya tertarik dengan jasa wedding photography Anda.%0A%0A` +
+                           `*Data Pemesan:*%0A` +
+                           `Nama: ${nama}%0A` +
+                           `Email: ${email}%0A` +
+                           `No. WA: ${whatsapp}%0A` +
+                           `Tanggal Pernikahan: ${tanggal}%0A` +
+                           `Paket: ${paket || '-'}%0A` +
+                           `Pesan: ${pesan || '-'}`;
+            
+            const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
+            window.open(whatsappURL, '_blank');
+        });
+
+        // Close lightbox when clicking outside
+        document.getElementById('lightbox').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeLightbox();
+            }
+        });
+    </script>
+</body>
+</html>
