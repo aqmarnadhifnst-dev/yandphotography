@@ -1,0 +1,206 @@
+<!-- TAMBAHKAN DI <head> -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- TAMBAHKAN SEBELUM </body> -->
+<script>
+// ============================================
+// KONFIGURASI SUPABASE
+// ============================================
+const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
+const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ============================================
+// 1. AMBIL PAKET DARI DATABASE
+// ============================================
+async function loadPackages() {
+    const { data, error } = await supabase
+        .from('packages')
+        .select('*')
+        .eq('is_active', true)
+        .order('price', { ascending: true });
+    
+    if (error) {
+        console.error('Error loading packages:', error);
+        return;
+    }
+    
+    // Render paket ke HTML (sesuaikan dengan struktur Anda)
+    const container = document.getElementById('packages-container');
+    container.innerHTML = data.map(pkg => `
+        <div class="bg-white p-6 border border-stone-200 rounded-sm">
+            <h3 class="text-lg font-serif">${pkg.name}</h3>
+            <p class="text-3xl font-serif">Rp ${(pkg.price/1000000).toFixed(0)} Jt</p>
+            <ul>
+                ${pkg.features.map(f => `<li>✓ ${f}</li>`).join('')}
+            </ul>
+            <a href="https://wa.me/6281234567890?text=Halo, saya tertarik Paket ${pkg.name}" 
+               class="block text-center py-2 bg-charcoal text-white">
+                Pilih Paket
+            </a>
+        </div>
+    `).join('');
+}
+
+// ============================================
+// 2. AMBIL TESTIMONI DARI DATABASE
+// ============================================
+async function loadTestimonials() {
+    const { data, error } = await supabase
+        .from('testimonials')
+        .select('*')
+        .eq('is_published', true)
+        .eq('is_featured', true)
+        .order('created_at', { ascending: false })
+        .limit(6);
+    
+    if (error) {
+        console.error('Error loading testimonials:', error);
+        return;
+    }
+    
+    const container = document.getElementById('testimonials-container');
+    container.innerHTML = data.map(t => `
+        <div class="bg-beige p-8 rounded-sm">
+            <div class="flex mb-4">
+                ${'★'.repeat(t.rating).split('').map(() => 
+                    '<svg class="w-5 h-5 text-charcoal" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>'
+                ).join('')}
+            </div>
+            <p class="italic mb-6">"${t.content}"</p>
+            <p class="font-semibold">${t.couple_names}</p>
+            <p class="text-xs">Wedding di ${t.wedding_location}, ${t.wedding_year}</p>
+        </div>
+    `).join('');
+}
+
+// ============================================
+// 3. AMBIL GALERI FOTO DARI DATABASE
+// ============================================
+async function loadGalleries() {
+    const { data, error } = await supabase
+        .from('galleries')
+        .select(`
+            *,
+            photos (
+                id, url, alt_text, category
+            )
+        `)
+        .eq('is_published', true)
+        .order('wedding_date', { ascending: false });
+    
+    if (error) {
+        console.error('Error loading galleries:', error);
+        return;
+    }
+    
+    // Render gallery ke Masonry grid
+    const container = document.getElementById('gallery-container');
+    data.forEach(gallery => {
+        gallery.photos.forEach(photo => {
+            container.innerHTML += `
+                <div class="break-inside-avoid group relative overflow-hidden cursor-pointer"
+                     onclick="openLightbox('${photo.url}')">
+                    <img src="${photo.url}" alt="${photo.alt_text || gallery.title}" 
+                         class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105">
+                </div>
+            `;
+        });
+    });
+}
+
+// ============================================
+// 4. SIMPAN INQUIRY DARI FORM KONTAK
+// ============================================
+async function submitInquiry(formData) {
+    const { data, error } = await supabase
+        .from('inquiries')
+        .insert([{
+            nama: formData.nama,
+            email: formData.email,
+            whatsapp: formData.whatsapp,
+            wedding_date: formData.tanggal,
+            package_interest: formData.paket,
+            message: formData.pesan,
+            status: 'new'
+        }]);
+    
+    if (error) {
+        console.error('Error saving inquiry:', error);
+        alert('Maaf, terjadi kesalahan. Silakan coba lagi.');
+        return false;
+    }
+    
+    return true;
+}
+
+// ============================================
+// 5. CEK KETERSEDIAAN TANGGAL
+// ============================================
+async function checkAvailability(date) {
+    const { data, error } = await supabase
+        .from('bookings')
+        .select('status')
+        .eq('booking_date', date)
+        .in('status', ['confirmed', 'pending']);
+    
+    if (error) {
+        console.error('Error checking availability:', error);
+        return null;
+    }
+    
+    return data.length === 0; // true = available
+}
+
+// ============================================
+// UPDATE FORM CONTACT FORM
+// ============================================
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = {
+        nama: document.getElementById('nama').value,
+        email: document.getElementById('email').value,
+        whatsapp: document.getElementById('whatsapp').value,
+        tanggal: document.getElementById('tanggal').value,
+        paket: document.getElementById('paket').value,
+        pesan: document.getElementById('pesan').value
+    };
+    
+    // Cek ketersediaan tanggal
+    const isAvailable = await checkAvailability(formData.tanggal);
+    if (!isAvailable) {
+        if (!confirm('Tanggal ini sudah terbooking. Tetap lanjutkan mengirim inquiry?')) {
+            return;
+        }
+    }
+    
+    // Simpan ke database
+    const saved = await submitInquiry(formData);
+    
+    if (saved) {
+        // Tetap buka WhatsApp dengan data yang sudah diisi
+        const message = `Halo Eternal Moments!%0A%0A` +
+                       `Nama: ${formData.nama}%0A` +
+                       `Email: ${formData.email}%0A` +
+                       `No. WA: ${formData.whatsapp}%0A` +
+                       `Tanggal: ${formData.tanggal}%0A` +
+                       `Paket: ${formData.paket || '-'}%0A` +
+                       `Pesan: ${formData.pesan || '-'}`;
+        
+        window.open(`https://wa.me/6281234567890?text=${message}`, '_blank');
+        
+        alert('Terima kasih! Inquiry Anda telah kami terima.');
+        this.reset();
+    }
+});
+
+// ============================================
+// LOAD DATA SAAT HALAMAN DIMUAT
+// ============================================
+document.addEventListener('DOMContentLoaded', () => {
+    loadPackages();
+    loadTestimonials();
+    loadGalleries();
+});
+</script>
