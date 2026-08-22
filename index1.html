@@ -1,159 +1,125 @@
 <!-- TAMBAHKAN DI <head> -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<!-- TAMBAHKAN SEBELUM </body> -->
+<!-- GANTI JAVASCRIPT DI AKHIR BODY -->
 <script>
 // ============================================
-// KONFIGURASI SUPABASE
+// KONFIGURASI SUPABASE - GANTI DENGAN CREDENTIALS ANDA!
 // ============================================
 const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
 const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // ============================================
-// 1. AMBIL PAKET DARI DATABASE
+// LOAD DATA DARI DATABASE
 // ============================================
 async function loadPackages() {
-    const { data, error } = await supabase
+    const { data } = await supabase
         .from('packages')
         .select('*')
         .eq('is_active', true)
-        .order('price', { ascending: true });
+        .order('price');
     
-    if (error) {
-        console.error('Error loading packages:', error);
-        return;
-    }
+    if (!data) return;
     
-    // Render paket ke HTML (sesuaikan dengan struktur Anda)
     const container = document.getElementById('packages-container');
-    container.innerHTML = data.map(pkg => `
-        <div class="bg-white p-6 border border-stone-200 rounded-sm">
-            <h3 class="text-lg font-serif">${pkg.name}</h3>
-            <p class="text-3xl font-serif">Rp ${(pkg.price/1000000).toFixed(0)} Jt</p>
-            <ul>
-                ${pkg.features.map(f => `<li>✓ ${f}</li>`).join('')}
+    if (!container) return;
+    
+    container.innerHTML = data.map((pkg, i) => `
+        <div class="${pkg.is_popular ? 'bg-charcoal text-warm-white transform md:-translate-y-4 shadow-2xl relative' : 'bg-white border border-stone-200'} p-6 md:p-10 rounded-sm flex flex-col">
+            ${pkg.is_popular ? '<div class="absolute top-0 right-0 bg-warm-white text-charcoal text-xs tracking-widest uppercase px-4 py-1 rounded-bl-sm font-semibold">Populer</div>' : ''}
+            <h3 class="text-xl font-serif mb-2">${pkg.name}</h3>
+            <p class="${pkg.is_popular ? 'text-stone-300' : 'text-soft-charcoal'} text-sm mb-6 font-light">${pkg.description || ''}</p>
+            <div class="mb-8"><span class="text-4xl font-serif">Rp ${(pkg.price/1000000).toFixed(0)} Jt</span></div>
+            <ul class="space-y-4 mb-10 flex-grow ${pkg.is_popular ? 'text-stone-200' : 'text-soft-charcoal'} text-sm">
+                ${pkg.features.map(f => `<li class="flex items-start"><svg class="w-4 h-4 mr-3 mt-1 ${pkg.is_popular ? 'text-warm-white' : 'text-charcoal'} flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>${f}</span></li>`).join('')}
             </ul>
-            <a href="https://wa.me/6281234567890?text=Halo, saya tertarik Paket ${pkg.name}" 
-               class="block text-center py-2 bg-charcoal text-white">
+            <a href="https://wa.me/6281234567890?text=Halo, saya tertarik dengan ${pkg.name}" target="_blank" class="block text-center w-full py-3 ${pkg.is_popular ? 'bg-warm-white text-charcoal hover:bg-stone-200' : 'border border-charcoal text-charcoal hover:bg-charcoal hover:text-warm-white'} text-sm tracking-widest uppercase transition-all duration-300">
                 Pilih Paket
             </a>
         </div>
     `).join('');
 }
 
-// ============================================
-// 2. AMBIL TESTIMONI DARI DATABASE
-// ============================================
 async function loadTestimonials() {
-    const { data, error } = await supabase
+    const { data } = await supabase
         .from('testimonials')
         .select('*')
         .eq('is_published', true)
         .eq('is_featured', true)
-        .order('created_at', { ascending: false })
-        .limit(6);
+        .order('created_at', { ascending: false });
     
-    if (error) {
-        console.error('Error loading testimonials:', error);
-        return;
-    }
+    if (!data) return;
     
     const container = document.getElementById('testimonials-container');
+    if (!container) return;
+    
     container.innerHTML = data.map(t => `
         <div class="bg-beige p-8 rounded-sm">
-            <div class="flex mb-4">
-                ${'★'.repeat(t.rating).split('').map(() => 
-                    '<svg class="w-5 h-5 text-charcoal" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>'
-                ).join('')}
-            </div>
-            <p class="italic mb-6">"${t.content}"</p>
-            <p class="font-semibold">${t.couple_names}</p>
-            <p class="text-xs">Wedding di ${t.wedding_location}, ${t.wedding_year}</p>
+            <div class="flex mb-4">${'★'.repeat(t.rating).split('').map(() => '<svg class="w-5 h-5 text-charcoal" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>').join('')}</div>
+            <p class="text-soft-charcoal italic mb-6 leading-relaxed">"${t.content}"</p>
+            <p class="text-charcoal font-semibold">${t.couple_names}</p>
+            <p class="text-xs text-soft-charcoal tracking-wider">Wedding di ${t.wedding_location || '-'}, ${t.wedding_year || ''}</p>
         </div>
     `).join('');
 }
 
-// ============================================
-// 3. AMBIL GALERI FOTO DARI DATABASE
-// ============================================
 async function loadGalleries() {
-    const { data, error } = await supabase
+    const { data } = await supabase
         .from('galleries')
-        .select(`
-            *,
-            photos (
-                id, url, alt_text, category
-            )
-        `)
+        .select(`*, photos(*)`)
         .eq('is_published', true)
         .order('wedding_date', { ascending: false });
     
-    if (error) {
-        console.error('Error loading galleries:', error);
-        return;
-    }
+    if (!data) return;
     
-    // Render gallery ke Masonry grid
     const container = document.getElementById('gallery-container');
-    data.forEach(gallery => {
-        gallery.photos.forEach(photo => {
-            container.innerHTML += `
-                <div class="break-inside-avoid group relative overflow-hidden cursor-pointer"
-                     onclick="openLightbox('${photo.url}')">
-                    <img src="${photo.url}" alt="${photo.alt_text || gallery.title}" 
-                         class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105">
-                </div>
-            `;
-        });
+    if (!container) return;
+    
+    let allPhotos = [];
+    data.forEach(g => {
+        g.photos.forEach(p => allPhotos.push({...p, gallery: g}));
     });
+    
+    container.innerHTML = allPhotos.map((p, i) => `
+        <div class="break-inside-avoid group relative overflow-hidden rounded-sm cursor-pointer" onclick="openLightbox(${i})">
+            <img src="${p.url}" alt="${p.alt_text || p.gallery.title}" class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105">
+            <div class="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/20 transition-all duration-500"></div>
+        </div>
+    `).join('');
+    
+    // Update lightbox images
+    window.galleryImages = allPhotos.map(p => p.url);
 }
 
-// ============================================
-// 4. SIMPAN INQUIRY DARI FORM KONTAK
-// ============================================
-async function submitInquiry(formData) {
-    const { data, error } = await supabase
-        .from('inquiries')
-        .insert([{
-            nama: formData.nama,
-            email: formData.email,
-            whatsapp: formData.whatsapp,
-            wedding_date: formData.tanggal,
-            package_interest: formData.paket,
-            message: formData.pesan,
-            status: 'new'
-        }]);
+async function loadSettings() {
+    const { data } = await supabase.from('settings').select('*');
+    if (!data) return;
     
-    if (error) {
-        console.error('Error saving inquiry:', error);
-        alert('Maaf, terjadi kesalahan. Silakan coba lagi.');
-        return false;
+    const settings = {};
+    data.forEach(s => settings[s.key] = s.value);
+    
+    // Update WhatsApp number
+    if (settings.whatsapp_number) {
+        document.querySelectorAll('a[href*="wa.me"]').forEach(a => {
+            a.href = a.href.replace(/62\d+/, settings.whatsapp_number);
+        });
     }
     
-    return true;
-}
-
-// ============================================
-// 5. CEK KETERSEDIAAN TANGGAL
-// ============================================
-async function checkAvailability(date) {
-    const { data, error } = await supabase
-        .from('bookings')
-        .select('status')
-        .eq('booking_date', date)
-        .in('status', ['confirmed', 'pending']);
-    
-    if (error) {
-        console.error('Error checking availability:', error);
-        return null;
+    // Update social media
+    if (settings.instagram_url) {
+        document.querySelectorAll('a[href*="instagram.com"]').forEach(a => a.href = settings.instagram_url);
     }
-    
-    return data.length === 0; // true = available
+    if (settings.facebook_url) {
+        document.querySelectorAll('a[href*="facebook.com"]').forEach(a => a.href = settings.facebook_url);
+    }
+    if (settings.tiktok_url) {
+        document.querySelectorAll('a[href*="tiktok.com"]').forEach(a => a.href = settings.tiktok_url);
+    }
 }
 
 // ============================================
-// UPDATE FORM CONTACT FORM
+// FORM SUBMISSION
 // ============================================
 document.getElementById('contactForm').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -163,44 +129,32 @@ document.getElementById('contactForm').addEventListener('submit', async function
         email: document.getElementById('email').value,
         whatsapp: document.getElementById('whatsapp').value,
         tanggal: document.getElementById('tanggal').value,
-        paket: document.getElementById('paket').value,
-        pesan: document.getElementById('pesan').value
+        package_interest: document.getElementById('paket').value,
+        message: document.getElementById('pesan').value,
+        status: 'new'
     };
     
-    // Cek ketersediaan tanggal
-    const isAvailable = await checkAvailability(formData.tanggal);
-    if (!isAvailable) {
-        if (!confirm('Tanggal ini sudah terbooking. Tetap lanjutkan mengirim inquiry?')) {
-            return;
-        }
+    // Save to database
+    const { error } = await supabase.from('inquiries').insert([formData]);
+    
+    if (error) {
+        alert('Maaf, terjadi kesalahan. Silakan coba lagi.');
+        return;
     }
     
-    // Simpan ke database
-    const saved = await submitInquiry(formData);
+    // Open WhatsApp
+    const message = `Halo Eternal Moments!%0A%0ANama: ${formData.nama}%0AEmail: ${formData.email}%0ANo. WA: ${formData.whatsapp}%0ATanggal: ${formData.tanggal}%0APaket: ${formData.package_interest || '-'}%0APesan: ${formData.message || '-'}`;
     
-    if (saved) {
-        // Tetap buka WhatsApp dengan data yang sudah diisi
-        const message = `Halo Eternal Moments!%0A%0A` +
-                       `Nama: ${formData.nama}%0A` +
-                       `Email: ${formData.email}%0A` +
-                       `No. WA: ${formData.whatsapp}%0A` +
-                       `Tanggal: ${formData.tanggal}%0A` +
-                       `Paket: ${formData.paket || '-'}%0A` +
-                       `Pesan: ${formData.pesan || '-'}`;
-        
-        window.open(`https://wa.me/6281234567890?text=${message}`, '_blank');
-        
-        alert('Terima kasih! Inquiry Anda telah kami terima.');
-        this.reset();
-    }
+    window.open(`https://wa.me/6281234567890?text=${message}`, '_blank');
+    alert('Terima kasih! Inquiry Anda telah kami terima.');
+    this.reset();
 });
 
-// ============================================
-// LOAD DATA SAAT HALAMAN DIMUAT
-// ============================================
+// Load all data on page load
 document.addEventListener('DOMContentLoaded', () => {
     loadPackages();
     loadTestimonials();
     loadGalleries();
+    loadSettings();
 });
 </script>
