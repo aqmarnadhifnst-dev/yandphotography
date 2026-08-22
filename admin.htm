@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Eternal Moments</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'serif': ['Playfair Display', 'serif'],
+                        'sans': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'warm-white': '#FDFBF7',
+                        'beige': '#F4F1EA',
+                        'charcoal': '#2D2D2D',
+                        'soft-charcoal': '#4A4A4A',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .tab-active { background-color: #2D2D2D; color: #FDFBF7; }
+        .modal { display: none; }
+        .modal.active { display: flex; }
+        .drop-zone.dragover { border-color: #2D2D2D; background-color: #F4F1EA; }
+        .loader { border: 3px solid #F4F1EA; border-top: 3px solid #2D2D2D; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .toast { animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+    </style>
+</head>
+
+<body class="bg-beige min-h-screen">
+
+    <!-- ========================================== -->
+    <!-- LOGIN SCREEN                                -->
+    <!-- ========================================== -->
+    <div id="loginScreen" class="min-h-screen flex items-center justify-center p-6">
+        <div class="bg-white p-8 md:p-12 rounded-sm shadow-2xl max-w-md w-full">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-serif text-charcoal mb-2">Eternal <span class="italic">Moments</span></h1>
+                <p class="text-soft-charcoal text-sm">Admin Dashboard</p>
+            </div>
+
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm text-charcoal mb-2">Email</label>
+                    <input type="email" id="loginEmail" required class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm focus:outline-none focus:border-charcoal">
+                </div>
+                <div>
+                    <label class="block text-sm text-charcoal mb-2">Password</label>
+                    <input type="password" id="loginPassword" required class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm focus:outline-none focus:border-charcoal">
+                </div>
+                <button type="submit" class="w-full py-3 bg-charcoal text-warm-white text-sm tracking-widest uppercase hover:bg-soft-charcoal transition-colors">
+                    Login
+                </button>
+                <p id="loginError" class="text-red-600 text-sm text-center hidden"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- DASHBOARD                                   -->
+    <!-- ========================================== -->
+    <div id="dashboardScreen" class="hidden">
+        <!-- Top Bar -->
+        <header class="bg-white border-b border-stone-200 sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                <h1 class="text-xl font-serif text-charcoal">Admin <span class="italic">Dashboard</span></h1>
+                <div class="flex items-center gap-4">
+                    <span id="adminEmail" class="text-sm text-soft-charcoal hidden md:block"></span>
+                    <button onclick="logout()" class="text-sm text-charcoal hover:text-red-600 transition-colors">
+                        <i class="fas fa-sign-out-alt mr-1"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="max-w-7xl mx-auto px-6 py-8">
+            <!-- Tabs Navigation -->
+            <div class="flex flex-wrap gap-2 mb-8 border-b border-stone-200 pb-4">
+                <button onclick="showTab('overview')" class="tab-btn tab-active px-4 py-2 text-sm tracking-wider uppercase rounded-sm transition-colors" data-tab="overview">
+                    <i class="fas fa-chart-line mr-2"></i>Overview
+                </button>
+                <button onclick="showTab('packages')" class="tab-btn px-4 py-2 text-sm tracking-wider uppercase rounded-sm hover:bg-stone-100 transition-colors" data-tab="packages">
+                    <i class="fas fa-box mr-2"></i>Paket
+                </button>
+                <button onclick="showTab('galleries')" class="tab-btn px-4 py-2 text-sm tracking-wider uppercase rounded-sm hover:bg-stone-100 transition-colors" data-tab="galleries">
+                    <i class="fas fa-images mr-2"></i>Galeri
+                </button>
+                <button onclick="showTab('testimonials')" class="tab-btn px-4 py-2 text-sm tracking-wider uppercase rounded-sm hover:bg-stone-100 transition-colors" data-tab="testimonials">
+                    <i class="fas fa-quote-right mr-2"></i>Testimoni
+                </button>
+                <button onclick="showTab('inquiries')" class="tab-btn px-4 py-2 text-sm tracking-wider uppercase rounded-sm hover:bg-stone-100 transition-colors" data-tab="inquiries">
+                    <i class="fas fa-envelope mr-2"></i>Inquiry
+                </button>
+                <button onclick="showTab('bookings')" class="tab-btn px-4 py-2 text-sm tracking-wider uppercase rounded-sm hover:bg-stone-100 transition-colors" data-tab="bookings">
+                    <i class="fas fa-calendar mr-2"></i>Booking
+                </button>
+                <button onclick="showTab('settings')" class="tab-btn px-4 py-2 text-sm tracking-wider uppercase rounded-sm hover:bg-stone-100 transition-colors" data-tab="settings">
+                    <i class="fas fa-cog mr-2"></i>Settings
+                </button>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- TAB: OVERVIEW                               -->
+            <!-- ========================================== -->
+            <div id="tab-overview" class="tab-content">
+                <h2 class="text-2xl font-serif text-charcoal mb-6">Dashboard Overview</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-sm shadow-sm">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-xs text-soft-charcoal tracking-wider uppercase">Total Inquiry</p>
+                            <i class="fas fa-envelope text-charcoal"></i>
+                        </div>
+                        <p id="stat-inquiries" class="text-3xl font-serif text-charcoal">0</p>
+                        <p class="text-xs text-soft-charcoal mt-1"><span id="stat-new-inquiries">0</span> baru</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-sm shadow-sm">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-xs text-soft-charcoal tracking-wider uppercase">Booking Aktif</p>
+                            <i class="fas fa-calendar-check text-charcoal"></i>
+                        </div>
+                        <p id="stat-bookings" class="text-3xl font-serif text-charcoal">0</p>
+                        <p class="text-xs text-soft-charcoal mt-1">Bulan ini</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-sm shadow-sm">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-xs text-soft-charcoal tracking-wider uppercase">Total Galeri</p>
+                            <i class="fas fa-images text-charcoal"></i>
+                        </div>
+                        <p id="stat-galleries" class="text-3xl font-serif text-charcoal">0</p>
+                        <p class="text-xs text-soft-charcoal mt-1"><span id="stat-photos">0</span> foto</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-sm shadow-sm">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-xs text-soft-charcoal tracking-wider uppercase">Testimoni</p>
+                            <i class="fas fa-star text-charcoal"></i>
+                        </div>
+                        <p id="stat-testimonials" class="text-3xl font-serif text-charcoal">0</p>
+                        <p class="text-xs text-soft-charcoal mt-1">Rating rata-rata 5.0</p>
+                    </div>
+                </div>
+
+                <!-- Recent Inquiries -->
+                <div class="bg-white p-6 rounded-sm shadow-sm">
+                    <h3 class="text-lg font-serif text-charcoal mb-4">Inquiry Terbaru</h3>
+                    <div id="recent-inquiries" class="space-y-3"></div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- TAB: PACKAGES                               -->
+            <!-- ========================================== -->
+            <div id="tab-packages" class="tab-content hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-serif text-charcoal">Kelola Paket</h2>
+                    <button onclick="openPackageModal()" class="px-4 py-2 bg-charcoal text-warm-white text-sm tracking-wider uppercase hover:bg-soft-charcoal">
+                        <i class="fas fa-plus mr-2"></i>Tambah Paket
+                    </button>
+                </div>
+                <div id="packages-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- TAB: GALLERIES                              -->
+            <!-- ========================================== -->
+            <div id="tab-galleries" class="tab-content hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-serif text-charcoal">Kelola Galeri</h2>
+                    <button onclick="openGalleryModal()" class="px-4 py-2 bg-charcoal text-warm-white text-sm tracking-wider uppercase hover:bg-soft-charcoal">
+                        <i class="fas fa-plus mr-2"></i>Tambah Galeri
+                    </button>
+                </div>
+                <div id="galleries-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- TAB: TESTIMONIALS                           -->
+            <!-- ========================================== -->
+            <div id="tab-testimonials" class="tab-content hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-serif text-charcoal">Kelola Testimoni</h2>
+                    <button onclick="openTestimonialModal()" class="px-4 py-2 bg-charcoal text-warm-white text-sm tracking-wider uppercase hover:bg-soft-charcoal">
+                        <i class="fas fa-plus mr-2"></i>Tambah Testimoni
+                    </button>
+                </div>
+                <div id="testimonials-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- TAB: INQUIRIES                              -->
+            <!-- ========================================== -->
+            <div id="tab-inquiries" class="tab-content hidden">
+                <h2 class="text-2xl font-serif text-charcoal mb-6">Pesan Inquiry</h2>
+                <div class="flex gap-2 mb-4">
+                    <button onclick="filterInquiries('all')" class="inquiry-filter px-3 py-1 bg-charcoal text-warm-white text-xs uppercase">Semua</button>
+                    <button onclick="filterInquiries('new')" class="inquiry-filter px-3 py-1 bg-stone-200 text-charcoal text-xs uppercase hover:bg-stone-300">Baru</button>
+                    <button onclick="filterInquiries('contacted')" class="inquiry-filter px-3 py-1 bg-stone-200 text-charcoal text-xs uppercase hover:bg-stone-300">Dihubungi</button>
+                    <button onclick="filterInquiries('closed')" class="inquiry-filter px-3 py-1 bg-stone-200 text-charcoal text-xs uppercase hover:bg-stone-300">Selesai</button>
+                </div>
+                <div id="inquiries-list" class="space-y-4"></div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- TAB: BOOKINGS                               -->
+            <!-- ========================================== -->
+            <div id="tab-bookings" class="tab-content hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-serif text-charcoal">Kalender Booking</h2>
+                    <button onclick="openBookingModal()" class="px-4 py-2 bg-charcoal text-warm-white text-sm tracking-wider uppercase hover:bg-soft-charcoal">
+                        <i class="fas fa-plus mr-2"></i>Blokir Tanggal
+                    </button>
+                </div>
+                <div id="bookings-list" class="bg-white p-6 rounded-sm shadow-sm"></div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- TAB: SETTINGS                               -->
+            <!-- ========================================== -->
+            <div id="tab-settings" class="tab-content hidden">
+                <h2 class="text-2xl font-serif text-charcoal mb-6">Pengaturan Website</h2>
+                <form id="settingsForm" class="bg-white p-6 rounded-sm shadow-sm space-y-4">
+                    <div>
+                        <label class="block text-sm text-charcoal mb-2">Nomor WhatsApp</label>
+                        <input type="text" id="setting-whatsapp" class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-charcoal mb-2">Email</label>
+                        <input type="email" id="setting-email" class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-charcoal mb-2">Alamat</label>
+                        <textarea id="setting-address" rows="2" class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-charcoal mb-2">Instagram URL</label>
+                        <input type="url" id="setting-instagram" class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-charcoal mb-2">Facebook URL</label>
+                        <input type="url" id="setting-facebook" class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-charcoal mb-2">TikTok URL</label>
+                        <input type="url" id="setting-tiktok" class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm">
+                    </div>
+                    <button type="submit" class="px-6 py-3 bg-charcoal text-warm-white text-sm tracking-wider uppercase hover:bg-soft-charcoal">
+                        Simpan Pengaturan
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODALS                                      -->
+    <!-- ========================================== -->
+    
+    <!-- Package Modal -->
+    <div id="packageModal" class="modal fixed inset-0 z-50 bg-charcoal/80 items-center justify-center p-4">
+        <div class="bg-white rounded-sm max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b border-stone-200 flex justify-between items-center">
+                <h3 id="packageModalTitle" class="text-xl font-serif text-charcoal">Tambah Paket</h3>
+                <button onclick="closeModal('packageModal')" class="text-soft-charcoal hover:text-charcoal">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="packageForm" class="p-6 space-y-4">
+                <input type="hidden" id="package-id">
+                <div>
+                    <label class="block text-sm text-charcoal mb-2">Nama Paket *</label>
+                    <input type="text" id="package-name" required class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm">
+                </div>
+                <div>
+                    <label class="block text-sm text-charcoal mb-2">Harga (Rp) *</label>
+                    <input type="number" id="package-price" required class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm">
+                </div>
+                <div>
+                    <label class="block text-sm text-charcoal mb-2">Deskripsi</label>
+                    <textarea id="package-description" rows="2" class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm text-charcoal mb-2">Fitur (satu per baris) *</label>
+                    <textarea id="package-features" rows="5" required placeholder="1 Fotografer&#10;8 Jam Dokumentasi&#10;300+ Foto Editan" class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm"></textarea>
+                </div>
+                <div class="flex gap-6">
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" id="package-popular" class="w-4 h-4">
+                        <span class="text-sm">Paket Populer</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" id="package-active" checked class="w-4 h-4">
+                        <span class="text-sm">Aktif</span>
+                    </label>
+                </div>
+                <div class="flex gap-3 pt-4">
+                    <button type="submit" class="flex-1 py-3 bg-charcoal text-warm-white text-sm tracking-wider uppercase hover:bg-soft-charcoal">
+                        Simpan
+                    </button>
+                    <button type="button" onclick="closeModal('packageModal')" class="flex-1 py-3 border border-stone-300 text-charcoal text-sm tracking-wider uppercase hover:bg-stone-100">
+                        Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Gallery Modal -->
+    <div id="galleryModal" class="modal fixed inset-0 z-50 bg-charcoal/80 items-center justify-center p-4">
+        <div class="bg-white rounded-sm max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b border-stone-200 flex justify-between items-center">
+                <h3 id="galleryModalTitle" class="text-xl font-serif text-charcoal">Tambah Galeri</h3>
+                <button onclick="closeModal('galleryModal')" class="text-soft-charcoal hover:text-charcoal">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="galleryForm" class="p-6 space-y-4">
+                <input type="hidden" id="gallery-id">
+                <div>
+                    <label class="block text-sm text-charcoal mb-2">Judul Galeri *</label>
+                    <input type="text" id="gallery-title" required class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm text-charcoal mb-2">Nama Pasangan</label>
+                        <input type="text" id="gallery-couple" class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-charcoal mb-2">Tanggal Wedding</label>
+                        <input type="date" id="gallery-date" class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm text-charcoal mb-2">Lokasi</label>
+                    <input type="text" id="gallery-location" class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm">
+                </div>
+                <div>
+                    <label class="block text-sm text-charcoal mb-2">Deskripsi</label>
+                    <textarea id="gallery-description" rows="3" class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm"></textarea>
+                </div>
+                <div>
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" id="gallery-published" checked class="w-4 h-4">
+                        <span class="text-sm">Published</span>
+                    </label>
+                </div>
+                <div class="flex gap-3 pt-4">
+                    <button type="submit" class="flex-1 py-3 bg-charcoal text-warm-white text-sm tracking-wider uppercase hover:bg-soft-charcoal">
+                        Simpan
+                    </button>
+                    <button type="button" onclick="closeModal('galleryModal')" class="flex-1 py-3 border border-stone-300 text-charcoal text-sm tracking-wider uppercase hover:bg-stone-100">
+                        Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Photo Upload Modal -->
+    <div id="photoModal" class="modal fixed inset-0 z-50 bg-charcoal/80 items-center justify-center p-4">
+        <div class="bg-white rounded-sm max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b border-stone-200 flex justify-between items-center">
+                <h3 class="text-xl font-serif text-charcoal">Upload Foto</h3>
+                <button onclick="closeModal('photoModal')" class="text-soft-charcoal hover:text-charcoal">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <div id="dropZone" class="drop-zone border-2 border-dashed border-stone-300 rounded-sm p-12 text-center cursor-pointer hover:border-charcoal transition-colors">
+                    <i class="fas fa-cloud-upload-alt text-4xl text-soft-charcoal mb-4"></i>
+                    <p class="text-charcoal mb-2">Drag & drop foto di sini</p>
+                    <p class="text-sm text-soft-charcoal">atau klik untuk pilih file</p>
+                    <input type="file" id="photoInput" accept="image/*" multiple class="hidden">
+                </div>
+                <div id="uploadProgress" class="mt-4 hidden">
+                    <div class="bg-stone-200 rounded-full h-2 overflow-hidden">
+                        <div id="progressBar" class="bg-charcoal h-full transition-all" style="width: 0%"></div>
+                    </div>
+                    <p id="progressText" class="text-sm text-soft-charcoal mt-2 text-center">Mengupload...</p>
+                </div>
+                <div id="uploadedPhotos" class="grid grid-cols-3 md:grid-cols-4 gap-3 mt-6"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Testimonial Modal -->
+    <div id="testimonialModal" class="modal fixed inset-0 z-50 bg-charcoal/80 items-center justify-center p-4">
+        <div class="bg-white rounded-sm max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b border-stone-200 flex justify-between items-center">
+                <h3 id="testimonialModalTitle" class="text-xl font-serif text-charcoal">Tambah Testimoni</h3>
+                <button onclick="closeModal('testimonialModal')" class="text-soft-charcoal hover:text-charcoal">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="testimonialForm" class="p-6 space-y-4">
+                <input type="hidden" id="testimonial-id">
+                <div>
+                    <label class="block text-sm text-charcoal mb-2">Nama Pasangan *</label>
+                    <input type="text" id="testimonial-couple" required class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm">
+                </div>
+                <div>
+                    <label class="block text-sm text-charcoal mb-2">Testimoni *</label>
+                    <textarea id="testimonial-content" rows="4" required class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm"></textarea>
+                </div>
+                <div class="grid grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm text-charcoal mb-2">Rating (1-5)</label>
+                        <input type="number" id="testimonial-rating" min="1" max="5" value="5" class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-charcoal mb-2">Lokasi</label>
+                        <input type="text" id="testimonial-location" class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-charcoal mb-2">Tahun</label>
+                        <input type="number" id="testimonial-year" class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm">
+                    </div>
+                </div>
+                <div class="flex gap-6">
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" id="testimonial-featured" class="w-4 h-4">
+                        <span class="text-sm">Featured</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" id="testimonial-published" checked class="w-4 h-4">
+                        <span class="text-sm">Published</span>
+                    </label>
+                </div>
+                <div class="flex gap-3 pt-4">
+                    <button type="submit" class="flex-1 py-3 bg-charcoal text-warm-white text-sm tracking-wider uppercase hover:bg-soft-charcoal">
+                        Simpan
+                    </button>
+                    <button type="button" onclick="closeModal('testimonialModal')" class="flex-1 py-3 border border-stone-300 text-charcoal text-sm tracking-wider uppercase hover:bg-stone-100">
+                        Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="modal fixed inset-0 z-50 bg-charcoal/80 items-center justify-center p-4">
+        <div class="bg-white rounded-sm max-w-md w-full">
+            <div class="p-6 border-b border-stone-200 flex justify-between items-center">
+                <h3 class="text-xl font-serif text-charcoal">Blokir Tanggal</h3>
+                <button onclick="closeModal('bookingModal')" class="text-soft-charcoal hover:text-charcoal">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="bookingForm" class="p-6 space-y-4">
+                <input type="hidden" id="booking-id">
+                <div>
+                    <label class="block text-sm text-charcoal mb-2">Tanggal *</label>
+                    <input type="date" id="booking-date" required class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm">
+                </div>
+                <div>
+                    <label class="block text-sm text-charcoal mb-2">Status</label>
+                    <select id="booking-status" class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm">
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm text-charcoal mb-2">Catatan</label>
+                    <textarea id="booking-notes" rows="3" class="w-full px-4 py-3 bg-warm-white border border-stone-300 rounded-sm"></textarea>
+                </div>
+                <div class="flex gap-3 pt-4">
+                    <button type="submit" class="flex-1 py-3 bg-charcoal text-warm-white text-sm tracking-wider uppercase hover:bg-soft-charcoal">
+                        Simpan
+                    </button>
+                    <button type="button" onclick="closeModal('bookingModal')" class="flex-1 py-3 border border-stone-300 text-charcoal text-sm tracking-wider uppercase hover:bg-stone-100">
+                        Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-6 right-6 z-[100] hidden">
+        <div class="bg-charcoal text-warm-white px-6 py-3 rounded-sm shadow-2xl toast">
+            <p id="toastMessage" class="text-sm"></p>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- JAVASCRIPT                                  -->
+    <!-- ========================================== -->
+    <script>
+        // ==========================================
+        // KONFIGURASI - GANTI DENGAN CREDENTIALS ANDA!
+        // ==========================================
+        const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
+        const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUser = null;
+        let currentGalleryId = null;
+        let currentInquiryFilter = 'all';
+
+        // ==========================================
+        // AUTHENTICATION
+        // ==========================================
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const errorEl = document.getElementById('loginError');
+
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            
+            if (error) {
+                errorEl.textContent = 'Email atau password salah';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            currentUser = data.user;
+            document.getElementById('adminEmail').textContent = currentUser.email;
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('dashboardScreen').classList.remove('hidden');
+            loadDashboard();
+        });
+
+        async function logout() {
+            await supabase.auth.signOut();
+            location.reload();
+        }
+
+        // Check session on load
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session) {
+                currentUser = session.user;
+                document.getElementById('adminEmail').textContent = currentUser.email;
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('dashboardScreen').classList.remove('hidden');
+                loadDashboard();
+            }
+        });
+
+        // ==========================================
+        // TAB NAVIGATION
+        // ==========================================
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('tab-active');
+                btn.classList.add('hover:bg-stone-100');
+            });
+            
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            const activeBtn = document.querySelector(`[data-tab="${tabName}"]`);
+            activeBtn.classList.add('tab-active');
+            activeBtn.classList.remove('hover:bg-stone-100');
+
+            // Load data for tab
+            switch(tabName) {
+                case 'overview': loadOverview(); break;
+                case 'packages': loadPackages(); break;
+                case 'galleries': loadGalleries(); break;
+                case 'testimonials': loadTestimonials(); break;
+                case 'inquiries': loadInquiries(); break;
+                case 'bookings': loadBookings(); break;
+                case 'settings': loadSettings(); break;
+            }
+        }
+
+        // ==========================================
+        // DASHBOARD OVERVIEW
+        // ==========================================
+        async function loadOverview() {
+            const [inquiries, bookings, galleries, photos, testimonials] = await Promise.all([
+                supabase.from('inquiries').select('id, status, created_at').order('created_at', { ascending: false }),
+                supabase.from('bookings').select('id'),
+                supabase.from('galleries').select('id'),
+                supabase.from('photos').select('id'),
+                supabase.from('testimonials').select('id')
+            ]);
+
+            document.getElementById('stat-inquiries').textContent = inquiries.data?.length || 0;
+            document.getElementById('stat-new-inquiries').textContent = inquiries.data?.filter(i => i.status === 'new').length || 0;
+            document.getElementById('stat-bookings').textContent = bookings.data?.length || 0;
+            document.getElementById('stat-galleries').textContent = galleries.data?.length || 0;
+            document.getElementById('stat-photos').textContent = photos.data?.length || 0;
+            document.getElementById('stat-testimonials').textContent = testimonials.data?.length || 0;
+
+            // Recent inquiries
+            const recentContainer = document.getElementById('recent-inquiries');
+            recentContainer.innerHTML = (inquiries.data?.slice(0, 5) || []).map(i => `
+                <div class="flex justify-between items-center p-3 bg-warm-white rounded-sm">
+                    <div>
+                        <p class="font-semibold text-charcoal">${i.nama || 'Anonim'}</p>
+                        <p class="text-xs text-soft-charcoal">${new Date(i.created_at).toLocaleDateString('id-ID')}</p>
+                    </div>
+                    <span class="text-xs px-2 py-1 rounded-sm ${i.status === 'new' ? 'bg-green-100 text-green-800' : 'bg-stone-200 text-charcoal'}">${i.status}</span>
+                </div>
+            `).join('') || '<p class="text-soft-charcoal text-sm">Belum ada inquiry</p>';
+        }
+
+        // ==========================================
+        // PACKAGES MANAGEMENT
+        // ==========================================
+        async function loadPackages() {
+            const { data } = await supabase.from('packages').select('*').order('price');
+            const container = document.getElementById('packages-list');
+            
+            container.innerHTML = (data || []).map(p => `
+                <div class="bg-white p-6 rounded-sm shadow-sm border border-stone-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-lg font-serif text-charcoal">${p.name}</h3>
+                            <p class="text-2xl font-serif text-charcoal mt-1">Rp ${(p.price/1000000).toFixed(0)} Jt</p>
+                        </div>
+                        <div class="flex gap-2">
+                            ${p.is_popular ? '<span class="text-xs bg-charcoal text-warm-white px-2 py-1">POPULER</span>' : ''}
+                            ${p.is_active ? '<span class="text-xs bg-green-100 text-green-800 px-2 py-1">AKTIF</span>' : '<span class="text-xs bg-red-100 text-red-800 px-2 py-1">NONAKTIF</span>'}
+                        </div>
+                    </div>
+                    <p class="text-sm text-soft-charcoal mb-4">${p.description || ''}</p>
+                    <ul class="space-y-1 mb-4">
+                        ${p.features.map(f => `<li class="text-xs text-soft-charcoal">✓ ${f}</li>`).join('')}
+                    </ul>
+                    <div class="flex gap-2">
+                        <button onclick="editPackage(${p.id})" class="flex-1 py-2 border border-charcoal text-charcoal text-xs uppercase hover:bg-charcoal hover:text-warm-white">Edit</button>
+                        <button onclick="deletePackage(${p.id})" class="py-2 px-3 border border-red-500 text-red-500 text-xs uppercase hover:bg-red-500 hover:text-white">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('') || '<p class="text-soft-charcoal">Belum ada paket</p>';
+        }
+
+        function openPackageModal(pkg = null) {
+            document.getElementById('packageModalTitle').textContent = pkg ? 'Edit Paket' : 'Tambah Paket';
+            document.getElementById('package-id').value = pkg?.id || '';
+            document.getElementById('package-name').value = pkg?.name || '';
+            document.getElementById('package-price').value = pkg?.price || '';
+            document.getElementById('package-description').value = pkg?.description || '';
+            document.getElementById('package-features').value = pkg?.features?.join('\n') || '';
+            document.getElementById('package-popular').checked = pkg?.is_popular || false;
+            document.getElementById('package-active').checked = pkg?.is_active !== false;
+            document.getElementById('packageModal').classList.add('active');
+        }
+
+        async function editPackage(id) {
+            const { data } = await supabase.from('packages').select('*').eq('id', id).single();
+            openPackageModal(data);
+        }
+
+        document.getElementById('packageForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('package-id').value;
+            const payload = {
+                name: document.getElementById('package-name').value,
+                slug: document.getElementById('package-name').value.toLowerCase().replace(/\s+/g, '-'),
+                price: parseInt(document.getElementById('package-price').value),
+                description: document.getElementById('package-description').value,
+                features: document.getElementById('package-features').value.split('\n').filter(f => f.trim()),
+                is_popular: document.getElementById('package-popular').checked,
+                is_active: document.getElementById('package-active').checked
+            };
+
+            let result;
+            if (id) {
+                result = await supabase.from('packages').update(payload).eq('id', id);
+            } else {
+                result = await supabase.from('packages').insert([payload]);
+            }
+
+            if (result.error) {
+                showToast('Error: ' + result.error.message, 'error');
+                return;
+            }
+
+            closeModal('packageModal');
+            showToast('Paket berhasil disimpan');
+            loadPackages();
+        });
+
+        async function deletePackage(id) {
+            if (!confirm('Yakin hapus paket ini?')) return;
+            await supabase.from('packages').delete().eq('id', id);
+            showToast('Paket dihapus');
+            loadPackages();
+        }
+
+        // ==========================================
+        // GALLERIES MANAGEMENT
+        // ==========================================
+        async function loadGalleries() {
+            const { data } = await supabase.from('galleries').select('*, photos(count)').order('created_at', { ascending: false });
+            const container = document.getElementById('galleries-list');
+            
+            container.innerHTML = (data || []).map(g => `
+                <div class="bg-white rounded-sm shadow-sm overflow-hidden">
+                    ${g.cover_image ? `<img src="${g.cover_image}" class="w-full h-48 object-cover">` : '<div class="w-full h-48 bg-beige flex items-center justify-center"><i class="fas fa-image text-4xl text-stone-300"></i></div>'}
+                    <div class="p-4">
+                        <h3 class="font-serif text-charcoal">${g.title}</h3>
+                        <p class="text-sm text-soft-charcoal">${g.couple_names || '-'} • ${g.location || '-'}</p>
+                        <p class="text-xs text-soft-charcoal mt-2">${g.photos?.[0]?.count || 0} foto</p>
+                        <div class="flex gap-2 mt-4">
+                            <button onclick="openPhotoUpload(${g.id})" class="flex-1 py-2 bg-charcoal text-warm-white text-xs uppercase hover:bg-soft-charcoal">
+                                <i class="fas fa-upload mr-1"></i>Upload
+                            </button>
+                            <button onclick="editGallery(${g.id})" class="py-2 px-3 border border-charcoal text-charcoal text-xs uppercase hover:bg-charcoal hover:text-warm-white">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteGallery(${g.id})" class="py-2 px-3 border border-red-500 text-red-500 text-xs uppercase hover:bg-red-500 hover:text-white">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('') || '<p class="text-soft-charcoal">Belum ada galeri</p>';
+        }
+
+        function openGalleryModal(gallery = null) {
+            document.getElementById('galleryModalTitle').textContent = gallery ? 'Edit Galeri' : 'Tambah Galeri';
+            document.getElementById('gallery-id').value = gallery?.id || '';
+            document.getElementById('gallery-title').value = gallery?.title || '';
+            document.getElementById('gallery-couple').value = gallery?.couple_names || '';
+            document.getElementById('gallery-date').value = gallery?.wedding_date || '';
+            document.getElementById('gallery-location').value = gallery?.location || '';
+            document.getElementById('gallery-description').value = gallery?.description || '';
+            document.getElementById('gallery-published').checked = gallery?.is_published !== false;
+            document.getElementById('galleryModal').classList.add('active');
+        }
+
+        async function editGallery(id) {
+            const { data } = await supabase.from('galleries').select('*').eq('id', id).single();
+            openGalleryModal(data);
+        }
+
+        document.getElementById('galleryForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('gallery-id').value;
+            const payload = {
+                title: document.getElementById('gallery-title').value,
+                couple_names: document.getElementById('gallery-couple').value,
+                wedding_date: document.getElementById('gallery-date').value || null,
+                location: document.getElementById('gallery-location').value,
+                description: document.getElementById('gallery-description').value,
+                is_published: document.getElementById('gallery-published').checked
+            };
+
+            let result;
+            if (id) {
+                result = await supabase.from('galleries').update(payload).eq('id', id);
+            } else {
+                result = await supabase.from('galleries').insert([payload]);
+            }
+
+            if (result.error) {
+                showToast('Error: ' + result.error.message, 'error');
+                return;
+            }
+
+            closeModal('galleryModal');
+            showToast('Galeri berhasil disimpan');
+            loadGalleries();
+        });
+
+        async function deleteGallery(id) {
+            if (!confirm('Yakin hapus galeri ini? Semua foto di dalamnya akan terhapus.')) return;
+            await supabase.from('galleries').delete().eq('id', id);
+            showToast('Galeri dihapus');
+            loadGalleries();
+        }
+
+        // ==========================================
+        // PHOTO UPLOAD
+        // ==========================================
+        function openPhotoUpload(galleryId) {
+            currentGalleryId = galleryId;
+            document.getElementById('uploadedPhotos').innerHTML = '';
+            document.getElementById('photoModal').classList.add('active');
+            loadGalleryPhotos(galleryId);
+        }
+
+        async function loadGalleryPhotos(galleryId) {
+            const { data } = await supabase.from('photos').select('*').eq('gallery_id', galleryId).order('order_num');
+            const container = document.getElementById('uploadedPhotos');
+            container.innerHTML = (data || []).map(p => `
+                <div class="relative group">
+                    <img src="${p.url}" class="w-full h-24 object-cover rounded-sm">
+                    <button onclick="deletePhoto(${p.id}, '${p.url}')" class="absolute top-1 right-1 bg-red-500 text-white w-6 h-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                        <i class="fas fa-times text-xs"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        const dropZone = document.getElementById('dropZone');
+        const photoInput = document.getElementById('photoInput');
+
+        dropZone.addEventListener('click', () => photoInput.click());
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+        photoInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+        async function handleFiles(files) {
+            const progress = document.getElementById('uploadProgress');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            progress.classList.remove('hidden');
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const fileName = `${Date.now()}_${file.name}`;
+                
+                progressText.textContent = `Mengupload ${i + 1}/${files.length}: ${file.name}`;
+                progressBar.style.width = `${((i + 1) / files.length) * 100}%`;
+
+                const { data, error } = await supabase.storage.from('photos').upload(fileName, file);
+                
+                if (error) {
+                    showToast('Error upload: ' + error.message, 'error');
+                    continue;
+                }
+
+                const { data: urlData } = supabase.storage.from('photos').getPublicUrl(fileName);
+                
+                await supabase.from('photos').insert([{
+                    gallery_id: currentGalleryId,
+                    url: urlData.publicUrl,
+                    alt_text: file.name,
+                    order_num: i
+                }]);
+            }
+
+            progress.classList.add('hidden');
+            progressBar.style.width = '0%';
+            showToast(`${files.length} foto berhasil diupload`);
+            loadGalleryPhotos(currentGalleryId);
+            photoInput.value = '';
+        }
+
+        async function deletePhoto(id, url) {
+            if (!confirm('Hapus foto ini?')) return;
+            await supabase.from('photos').delete().eq('id', id);
+            // Delete from storage
+            const fileName = url.split('/photos/')[1];
+            if (fileName) await supabase.storage.from('photos').remove([fileName]);
+            loadGalleryPhotos(currentGalleryId);
+        }
+
+        // ==========================================
+        // TESTIMONIALS MANAGEMENT
+        // ==========================================
+        async function loadTestimonials() {
+            const { data } = await supabase.from('testimonials').select('*').order('created_at', { ascending: false });
+            const container = document.getElementById('testimonials-list');
+            
+            container.innerHTML = (data || []).map(t => `
+                <div class="bg-white p-6 rounded-sm shadow-sm">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h3 class="font-serif text-charcoal">${t.couple_names}</h3>
+                            <p class="text-xs text-soft-charcoal">${t.wedding_location || '-'} ${t.wedding_year || ''}</p>
+                        </div>
+                        <div class="flex gap-1">
+                            ${'★'.repeat(t.rating).split('').map(() => '<span class="text-charcoal">★</span>').join('')}
+                        </div>
+                    </div>
+                    <p class="text-sm text-soft-charcoal italic mb-4">"${t.content}"</p>
+                    <div class="flex gap-2">
+                        <button onclick="editTestimonial(${t.id})" class="flex-1 py-2 border border-charcoal text-charcoal text-xs uppercase hover:bg-charcoal hover:text-warm-white">Edit</button>
+                        <button onclick="deleteTestimonial(${t.id})" class="py-2 px-3 border border-red-500 text-red-500 text-xs uppercase hover:bg-red-500 hover:text-white">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('') || '<p class="text-soft-charcoal">Belum ada testimoni</p>';
+        }
+
+        function openTestimonialModal(t = null) {
+            document.getElementById('testimonialModalTitle').textContent = t ? 'Edit Testimoni' : 'Tambah Testimoni';
+            document.getElementById('testimonial-id').value = t?.id || '';
+            document.getElementById('testimonial-couple').value = t?.couple_names || '';
+            document.getElementById('testimonial-content').value = t?.content || '';
+            document.getElementById('testimonial-rating').value = t?.rating || 5;
+            document.getElementById('testimonial-location').value = t?.wedding_location || '';
+            document.getElementById('testimonial-year').value = t?.wedding_year || new Date().getFullYear();
+            document.getElementById('testimonial-featured').checked = t?.is_featured || false;
+            document.getElementById('testimonial-published').checked = t?.is_published !== false;
+            document.getElementById('testimonialModal').classList.add('active');
+        }
+
+        async function editTestimonial(id) {
+            const { data } = await supabase.from('testimonials').select('*').eq('id', id).single();
+            openTestimonialModal(data);
+        }
+
+        document.getElementById('testimonialForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('testimonial-id').value;
+            const payload = {
+                couple_names: document.getElementById('testimonial-couple').value,
+                content: document.getElementById('testimonial-content').value,
+                rating: parseInt(document.getElementById('testimonial-rating').value),
+                wedding_location: document.getElementById('testimonial-location').value,
+                wedding_year: parseInt(document.getElementById('testimonial-year').value),
+                is_featured: document.getElementById('testimonial-featured').checked,
+                is_published: document.getElementById('testimonial-published').checked
+            };
+
+            let result;
+            if (id) {
+                result = await supabase.from('testimonials').update(payload).eq('id', id);
+            } else {
+                result = await supabase.from('testimonials').insert([payload]);
+            }
+
+            if (result.error) {
+                showToast('Error: ' + result.error.message, 'error');
+                return;
+            }
+
+            closeModal('testimonialModal');
+            showToast('Testimoni berhasil disimpan');
+            loadTestimonials();
+        });
+
+        async function deleteTestimonial(id) {
+            if (!confirm('Yakin hapus testimoni ini?')) return;
+            await supabase.from('testimonials').delete().eq('id', id);
+            showToast('Testimoni dihapus');
+            loadTestimonials();
+        }
+
+        // ==========================================
+        // INQUIRIES MANAGEMENT
+        // ==========================================
+        async function loadInquiries() {
+            let query = supabase.from('inquiries').select('*').order('created_at', { ascending: false });
+            if (currentInquiryFilter !== 'all') query = query.eq('status', currentInquiryFilter);
+            const { data } = await query;
+            
+            const container = document.getElementById('inquiries-list');
+            container.innerHTML = (data || []).map(i => `
+                <div class="bg-white p-6 rounded-sm shadow-sm">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h3 class="font-serif text-charcoal">${i.nama}</h3>
+                            <p class="text-xs text-soft-charcoal">${new Date(i.created_at).toLocaleString('id-ID')}</p>
+                        </div>
+                        <span class="text-xs px-2 py-1 rounded-sm ${i.status === 'new' ? 'bg-green-100 text-green-800' : i.status === 'contacted' ? 'bg-yellow-100 text-yellow-800' : 'bg-stone-200 text-charcoal'}">${i.status}</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-sm mb-3">
+                        <p><i class="fas fa-envelope text-soft-charcoal mr-2"></i>${i.email || '-'}</p>
+                        <p><i class="fab fa-whatsapp text-soft-charcoal mr-2"></i>${i.whatsapp || '-'}</p>
+                        <p><i class="fas fa-calendar text-soft-charcoal mr-2"></i>${i.wedding_date ? new Date(i.wedding_date).toLocaleDateString('id-ID') : '-'}</p>
+                        <p><i class="fas fa-box text-soft-charcoal mr-2"></i>${i.package_interest || '-'}</p>
+                    </div>
+                    ${i.message ? `<p class="text-sm text-soft-charcoal italic mb-3">"${i.message}"</p>` : ''}
+                    <div class="flex gap-2">
+                        <button onclick="updateInquiryStatus(${i.id}, 'contacted')" class="flex-1 py-2 bg-yellow-500 text-white text-xs uppercase hover:bg-yellow-600">Tandai Dihubungi</button>
+                        <button onclick="updateInquiryStatus(${i.id}, 'closed')" class="flex-1 py-2 bg-stone-500 text-white text-xs uppercase hover:bg-stone-600">Selesai</button>
+                        <button onclick="deleteInquiry(${i.id})" class="py-2 px-3 border border-red-500 text-red-500 text-xs uppercase hover:bg-red-500 hover:text-white">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('') || '<p class="text-soft-charcoal">Tidak ada inquiry</p>';
+        }
+
+        function filterInquiries(status) {
+            currentInquiryFilter = status;
+            document.querySelectorAll('.inquiry-filter').forEach(btn => {
+                btn.classList.remove('bg-charcoal', 'text-warm-white');
+                btn.classList.add('bg-stone-200', 'text-charcoal');
+            });
+            event.target.classList.remove('bg-stone-200', 'text-charcoal');
+            event.target.classList.add('bg-charcoal', 'text-warm-white');
+            loadInquiries();
+        }
+
+        async function updateInquiryStatus(id, status) {
+            await supabase.from('inquiries').update({ status }).eq('id', id);
+            showToast('Status diupdate');
+            loadInquiries();
+        }
+
+        async function deleteInquiry(id) {
+            if (!confirm('Yakin hapus inquiry ini?')) return;
+            await supabase.from('inquiries').delete().eq('id', id);
+            showToast('Inquiry dihapus');
+            loadInquiries();
+        }
+
+        // ==========================================
+        // BOOKINGS MANAGEMENT
+        // ==========================================
+        async function loadBookings() {
+            const { data } = await supabase.from('bookings').select('*').order('booking_date');
+            const container = document.getElementById('bookings-list');
+            
+            container.innerHTML = (data || []).length > 0 ? `
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-stone-200">
+                            <th class="text-left py-2 text-xs tracking-wider uppercase text-soft-charcoal">Tanggal</th>
+                            <th class="text-left py-2 text-xs tracking-wider uppercase text-soft-charcoal">Status</th>
+                            <th class="text-left py-2 text-xs tracking-wider uppercase text-soft-charcoal">Catatan</th>
+                            <th class="text-right py-2 text-xs tracking-wider uppercase text-soft-charcoal">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map(b => `
+                            <tr class="border-b border-stone-100">
+                                <td class="py-3">${new Date(b.booking_date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</td>
+                                <td class="py-3"><span class="text-xs px-2 py-1 rounded-sm ${b.status === 'confirmed' ? 'bg-green-100 text-green-800' : b.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-stone-200'}">${b.status}</span></td>
+                                <td class="py-3 text-sm text-soft-charcoal">${b.notes || '-'}</td>
+                                <td class="py-3 text-right">
+                                    <button onclick="editBooking(${b.id})" class="text-charcoal hover:text-soft-charcoal mr-2"><i class="fas fa-edit"></i></button>
+                                    <button onclick="deleteBooking(${b.id})" class="text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            ` : '<p class="text-soft-charcoal text-center py-8">Belum ada booking</p>';
+        }
+
+        function openBookingModal(b = null) {
+            document.getElementById('booking-id').value = b?.id || '';
+            document.getElementById('booking-date').value = b?.booking_date || '';
+            document.getElementById('booking-status').value = b?.status || 'pending';
+            document.getElementById('booking-notes').value = b?.notes || '';
+            document.getElementById('bookingModal').classList.add('active');
+        }
+
+        async function editBooking(id) {
+            const { data } = await supabase.from('bookings').select('*').eq('id', id).single();
+            openBookingModal(data);
+        }
+
+        document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('booking-id').value;
+            const payload = {
+                booking_date: document.getElementById('booking-date').value,
+                status: document.getElementById('booking-status').value,
+                notes: document.getElementById('booking-notes').value
+            };
+
+            let result;
+            if (id) {
+                result = await supabase.from('bookings').update(payload).eq('id', id);
+            } else {
+                result = await supabase.from('bookings').insert([payload]);
+            }
+
+            if (result.error) {
+                showToast('Error: ' + result.error.message, 'error');
+                return;
+            }
+
+            closeModal('bookingModal');
+            showToast('Booking berhasil disimpan');
+            loadBookings();
+        });
+
+        async function deleteBooking(id) {
+            if (!confirm('Yakin hapus booking ini?')) return;
+            await supabase.from('bookings').delete().eq('id', id);
+            showToast('Booking dihapus');
+            loadBookings();
+        }
+
+        // ==========================================
+        // SETTINGS
+        // ==========================================
+        async function loadSettings() {
+            const { data } = await supabase.from('settings').select('*');
+            const settings = {};
+            data?.forEach(s => settings[s.key] = s.value);
+
+            document.getElementById('setting-whatsapp').value = settings.whatsapp_number || '';
+            document.getElementById('setting-email').value = settings.email || '';
+            document.getElementById('setting-address').value = settings.address || '';
+            document.getElementById('setting-instagram').value = settings.instagram_url || '';
+            document.getElementById('setting-facebook').value = settings.facebook_url || '';
+            document.getElementById('setting-tiktok').value = settings.tiktok_url || '';
+        }
+
+        document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const settings = [
+                { key: 'whatsapp_number', value: document.getElementById('setting-whatsapp').value },
+                { key: 'email', value: document.getElementById('setting-email').value },
+                { key: 'address', value: document.getElementById('setting-address').value },
+                { key: 'instagram_url', value: document.getElementById('setting-instagram').value },
+                { key: 'facebook_url', value: document.getElementById('setting-facebook').value },
+                { key: 'tiktok_url', value: document.getElementById('setting-tiktok').value }
+            ];
+
+            for (const s of settings) {
+                await supabase.from('settings').upsert(s, { onConflict: 'key' });
+            }
+
+            showToast('Pengaturan berhasil disimpan');
+        });
+
+        // ==========================================
+        // UTILITIES
+        // ==========================================
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3000);
+        }
+
+        function loadDashboard() {
+            showTab('overview');
+        }
+
+        // Close modal on outside click
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>
